@@ -1,0 +1,122 @@
+
+<p-panel  [style]="{'margin-top': '2rem'}">
+  <p-table [value]="listData"  [tableStyle]="{'min-width': '60rem'}">
+    <ng-template pTemplate="caption">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p>Engineers List</p>
+        <p-button (click)="openDialog(false)" label="Add Engineer" [raised]="true" severity="info" icon="pi pi-user" />
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+        <tr>
+          <th>PRC ID</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Licence Expiration Date </th>
+          <th>Status</th>
+          <th>action</th>
+          <th>View Assigned Projects</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+        <tr >
+            <td>{{row.prcID}}</td>
+            <td>{{row.name}}</td>
+            <td>{{row.gender}}</td>
+            <!-- <td><img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image" [alt]="product.name" width="100" class="shadow-lg" /></td> -->
+            <td>{{row.email}}</td>
+            <td  [ngStyle]="{ 'background-color': checkIfExpired(row) ? 'red' : 'green', color: 'white' }"> <strong>
+              {{row.prcExpiryDate | date}}
+            </strong></td>
+            <td>{{row.issActive === 1?'Active':'Not Active'}}</td>
+            <td>
+              <button
+                  type="button"
+                  pButton
+                  pRipple
+                  icon="pi pi-user-edit"
+                  (click)="edit(row)">
+              </button>
+            </td>
+            <td>
+              <button
+                  [label]="'View projects'"
+                  type="button"
+                  pButton
+                  pRipple
+                  icon="pi pi-warehouse"
+                  [routerLink]="['/engr/',+ row.id]" routerLinkActive="active">
+              </button>
+            </td>
+        </tr>
+    </ng-template>
+  </p-table>
+</p-panel>
+
+<div class="card flex justify-content-center">
+  <p-dialog [header]="headerTitle" [modal]="true" [(visible)]="visible" [style]="{ width: '80%' }" [draggable]="false">
+    <span class="p-text-secondary block mb-5">Update your information.</span>
+
+    <form [formGroup]="profileForm">
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="prcID" class="font-semibold w-6rem">PRC ID</label>
+        <p-inputMask [style]="{ width: '100%' }" class="flex-auto"
+          mask="99-99999"   placeholder="00-12345"
+         formControlName="prcID"  />
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="prcExpiryDate" class="font-semibold w-6rem">PRC Expiry</label>
+        <!-- <input pInputText id="prcExpiryDate" type="date" class="flex-auto" formControlName="prcExpiryDate" /> -->
+        <p-calendar  class="flex-auto" [style]="{ width: '100%' }" formControlName="prcExpiryDate" [iconDisplay]="'input'"
+        [showIcon]="true"  [touchUI]="true"
+        [readonlyInput]="true"
+        inputId="icondisplay" />
+      </div>
+
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="name" class="font-semibold w-6rem">Name</label>
+        <input pInputText id="name" class="flex-auto" formControlName="name" autocomplete="off" />
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="gender" class="font-semibold w-6rem">Gender</label>
+        <p-dropdown [style]="{ width: '100%' }" id="gender" class="flex-auto" formControlName="gender" [options]="genders" [showClear]="true" ></p-dropdown>
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="email" class="font-semibold w-6rem">Email</label>
+        <input pInputText id="email" class="flex-auto" formControlName="email" autocomplete="off" />
+      </div>
+
+      <!-- <div class="flex align-items-center gap-3 mb-3">
+        <label for="projectCount" class="font-semibold w-6rem">Project Count</label>
+        <input pInputText id="projectCount" type="number" class="flex-auto" formControlName="projectCount" readonly/>
+      </div> -->
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="issActive" class="font-semibold w-6rem">Status</label>
+        <!-- <input pInputText id="issActive" type="number" class="flex-auto" formControlName="issActive" /> -->
+        <p-selectButton
+          [options]="stateOptions"
+          formControlName="issActive"
+          optionLabel="label"
+          optionValue="value" />
+      </div>
+    </form>
+    <form  *ngIf="headerTitle == 'Edit Information'" >
+      <div class="flex justify-content-center gap-2">
+        <input type="file" (change)="onFileSelected($event)" />
+        <p-button label="Upload" (onClick)="onSubmitImage()" />
+      </div>
+    </form>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
+      <p-button label="Save" (onClick)="onSubmit()" />
+    </div>
+  </p-dialog>
+
+</div>

@@ -1,0 +1,93 @@
+<p-panel [style]="{'margin-top': '2rem'}">
+  <p-table  [value]="listData"  [tableStyle]="{'min-width': '60rem'}">
+    <ng-template pTemplate="caption">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p>Projects List</p>
+        <p-button (click)="openDialog(false)" label="Add Project" [raised]="true" severity="info" icon="pi pi-file" />
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Title</th>
+        <th>Contractor</th>
+        <th>Amount</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Assigned Engineer ID</th>
+        <th>Status</th>
+        <th>edit</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row>
+      <tr>
+          <td>{{row.title}}</td>
+          <td>{{row.contructor}}</td>
+          <td>{{row.amount}}</td>
+          <td>{{row.startDate | date}}</td>
+          <td>{{row.endDate | date}}</td>
+          <td>{{getName(row.assignedEngrID)}}</td>
+          <td>{{row.status === 1?'Active':'Not Active'}}</td>
+          <td>
+            <button
+                type="button"
+                pButton
+                pRipple
+                icon="pi pi-user-edit"
+                (click)="edit(row)">
+            </button>
+          </td>
+      </tr>
+  </ng-template>
+  </p-table>
+</p-panel>
+
+<div class="card flex justify-content-center">
+  <p-dialog [header]="headerTitle" [modal]="true" [(visible)]="visible" [style]="{ width: '80%' }" [draggable]="false">
+    <span class="p-text-secondary block mb-5">Update the project details.</span>
+
+    <form *ngIf="projectForm" [formGroup]="projectForm">
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="title" class="font-semibold w-6rem">Title</label>
+        <input pInputText id="title" class="flex-auto" formControlName="title" autocomplete="off" />
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="contructor" class="font-semibold w-6rem">Contractor</label>
+        <input pInputText id="contructor" class="flex-auto" formControlName="contructor" autocomplete="off" />
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="amount" class="font-semibold w-6rem">Amount</label>
+        <input pInputText id="amount" type="number" class="flex-auto" formControlName="amount" />
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="startDate" class="font-semibold w-6rem">Start Date</label>
+        <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="startDate" [iconDisplay]="'input'"
+          [showIcon]="true" [touchUI]="true" [readonlyInput]="true" inputId="startDate" [maxDate]="projectForm.get('endDate')?.value" />
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="endDate" class="font-semibold w-6rem">End Date</label>
+        <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="endDate" [iconDisplay]="'input'"
+          [showIcon]="true" [touchUI]="true" [readonlyInput]="true" inputId="endDate" [minDate]="minEndDate" />
+      </div>
+
+
+      <!-- <div class="flex align-items-center gap-3 mb-3" *ngIf="editMode">
+        <label for="assignedEngrID" class="font-semibold w-6rem">Assigned Engineer</label>
+        <p-dropdown [style]="{ width: '100%' }"  class="flex-auto" formControlName="assignedEngrID" [options]="engrList" [showClear]="true" ></p-dropdown>
+      </div> -->
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="status" class="font-semibold w-6rem">Status</label>
+        <p-selectButton [options]="statusOptions" formControlName="status" optionLabel="label" optionValue="value" />
+      </div>
+    </form>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button label="Cancel" severity="secondary" (onClick)="visible = false" />
+      <p-button label="Save" (onClick)="onSubmit()" />
+    </div>
+  </p-dialog>
+</div>

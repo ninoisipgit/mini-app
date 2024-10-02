@@ -1,0 +1,134 @@
+<p-panel [style]="{'margin-top': '2rem'}" >
+  <div class="grid">
+    <div class="col-7" *ngIf="engrDetails">
+      <p-card header="Engineer Details">
+        <div class="detail">
+          <h3><strong>ID:</strong> {{ engrDetails.id }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>PRC ID:</strong> {{ engrDetails.prcID }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>Name:</strong> {{ engrDetails.name }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>Gender:</strong> {{ engrDetails.gender }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>Email:</strong> {{ engrDetails.email }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>PRC Expiry Date:</strong> {{ engrDetails.prcExpiryDate | date:'longDate' }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>Project Count:</strong> {{ projectListDataByEngr?.length }}</h3>
+        </div>
+        <div class="detail">
+          <h3><strong>Active Status:</strong> {{ engrDetails.issActive ? 'Active' : 'Inactive' }}</h3>
+        </div>
+      </p-card>
+    </div>
+    <div class="col-5  float-right" *ngIf="engrDetails">
+      <p-card (click)="imagePath != null?showImageDialog = true: null">
+        <!-- <img
+        src="assets/images/{{engrDetails.prcID}}.jpg"
+        [alt]="product.name"
+        class="w-full border-round" /> -->
+        <img
+        [src]="imagePath"
+        [alt]="engrDetails.prcID + ' no image available'"
+        class="w-full border-round" />
+      </p-card>
+    </div>
+
+  </div>
+
+
+  <p-table  [value]="projectListDataByEngr"  [tableStyle]="{'min-width': '60rem'}">
+    <ng-template pTemplate="caption">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p>Projects List Assigned to {{ engrDetails?.name }}</p>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Number</th>
+        <th>Title</th>
+        <th>Contractor</th>
+        <th>Amount</th>
+        <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
+        <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
+        <!-- <th>Assigned Engineer ID</th> -->
+        <th>Status</th>
+        <th>action</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+      <tr>
+          <td style="font-weight: bold;">{{rowIndex + 1 }}</td>
+          <td>{{row.title}}</td>
+          <td>{{row.contructor}}</td>
+          <td>{{row.amount}}</td>
+          <td>{{row.startDate | date}}</td>
+          <td>{{row.endDate | date}}</td>
+          <!-- <td>{{getName(row.assignedEngrID)}}</td> -->
+          <td>{{row.status === 1?'Active':'Not Active'}}</td>
+          <td>
+            <p-button (click)="unAssignProject(row)" label="UnAssign Project" [raised]="true" severity="danger" icon="pi pi-minus" />
+          </td>
+      </tr>
+  </ng-template>
+  </p-table>
+  <div style="margin-top: 20px;">
+    <p-table  [value]="projectListAll"  [tableStyle]="{'min-width': '60rem', 'margin-top': '2rem'}">
+      <ng-template pTemplate="caption">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <p>Available Projects List</p>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Number</th>
+          <th>Title</th>
+          <th>Contractor</th>
+          <th>Amount</th>
+          <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
+          <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
+          <th>Status</th>
+          <th></th>
+
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row  let-rowIndex="rowIndex">
+        <tr>
+          <td style="font-weight: bold;">{{rowIndex + 1 }}</td>
+            <td>{{row.title}}</td>
+            <td>{{row.contructor}}</td>
+            <td>{{row.amount}}</td>
+            <td>{{row.startDate | date}}</td>
+            <td>{{row.endDate | date}}</td>
+            <td>{{row.status === 1?'Active':'Not Active'}}</td>
+            <td *ngIf="row.invalid == true" style="color: red">
+              DATE OVERLAPPED
+            </td>
+            <td *ngIf="row.invalid == undefined">
+              <p-button (click)="assignProject(row)" label="Assign Project" [raised]="true" severity="info" icon="pi pi-plus" />
+            </td>
+        </tr>
+    </ng-template>
+    </p-table>
+  </div>
+</p-panel>
+<!-- Dialog for displaying the full image -->
+<p-dialog [(visible)]="showImageDialog" [modal]="true" [style]="{width: '75vw'}" header="Full Image" [dismissableMask]="true">
+  <img
+    #imageToPrint
+    [src]="imagePath"
+    [alt]="engrDetails?.prcID"
+    style="width: 100%; height: auto;"
+  />
+    <!-- Print Button -->
+    <div class="text-center" style="margin-top: 1rem;">
+        <p-button (click)="printImage()" label="Print Image" [raised]="true" severity="info" icon="pi pi-plus" />
+    </div>
+</p-dialog>
