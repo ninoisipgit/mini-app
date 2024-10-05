@@ -62,15 +62,26 @@
       </div>
 
       <div class="flex align-items-center gap-3 mb-3">
-        <label for="startDate" class="font-semibold w-6rem">Start Date</label>
-        <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="startDate" [iconDisplay]="'input'"
-          [showIcon]="true" [touchUI]="true" [readonlyInput]="true" inputId="startDate" [maxDate]="projectForm.get('endDate')?.value" />
+        <label for="startDate" class="font-semibold w-6rem">NTP Start Date</label>
+        <!-- <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="startDate" [iconDisplay]="'input'"
+          [showIcon]="true" [touchUI]="true" [readonlyInput]="true" inputId="startDate" [maxDate]="projectForm.get('endDate')?.value" /> -->
+          <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="startDate" [iconDisplay]="'input'"
+          [showIcon]="true" [touchUI]="true" [readonlyInput]="true" inputId="startDate" (ngModelChange)="updateEndDate($event)"   />
       </div>
 
       <div class="flex align-items-center gap-3 mb-3">
-        <label for="endDate" class="font-semibold w-6rem">End Date</label>
-        <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="endDate" [iconDisplay]="'input'"
-          [showIcon]="true" [touchUI]="true" [readonlyInput]="true" inputId="endDate" [minDate]="minEndDate" />
+        <label for="endDate" class="font-semibold w-6rem">NTP End Date</label>
+        <p><strong> {{projectForm.get('endDate')?.value | date}}</strong></p>
+        <!-- <p-calendar class="flex-auto" [style]="{ width: '100%' }" formControlName="endDate" [iconDisplay]="'input'"
+          [readonlyInput]="true" inputId="endDate" [minDate]="minEndDate" [disabled]="true"  /> -->
+          <!-- <input pInputText id="amount" type="text" class="flex-auto" formControlName="endDate" readonly /> -->
+      </div>
+
+      <div class="flex align-items-center gap-3 mb-3">
+        <label for="amount" class="font-semibold w-6rem">Calendar days</label>
+        <!-- <input pInputText id="amount" type="date" class="flex-auto" formControlName="endDate" readonly /> -->
+        <input pInputText id="amount" type="number" class="flex-auto" [(ngModel)]="calendarDays"
+        [ngModelOptions]="{standalone: true}" (blur)="updateEndDate($event)"  />
       </div>
 
 
